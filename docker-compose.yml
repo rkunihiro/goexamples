@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # golang
+  # https://hub.docker.com/_/golang
+  golang:
+    container_name: goexample-container-golang
+    build:
+      context: .
+      dockerfile: ./docker/golang/Dockerfile
+    # image: golang:1.15.0-alpine
+    environment:
+      CGO_ENABLED: 0
+      GO111MODULE: 'on'
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    working_dir: /app
+    tty: true
+
+  # MySQL
+  # https://hub.docker.com/_/mysql
+  mysql:
+    container_name: goexample-container-mysql
+    image: mysql:8.0.21
+    # image: mysql:5.7.31
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: dbname
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/mysql/conf:/etc/mysql/conf.d
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+      - ./docker/mysql/logs:/var/log/mysql
+
